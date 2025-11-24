@@ -1,4 +1,5 @@
-import { Button } from './components/ui/button';
+import { Link } from '@tanstack/react-router';
+import { Button } from './ui/button';
 
 export default function SplashScreen() {
   return (
@@ -17,7 +18,9 @@ export default function SplashScreen() {
         </span>
       </h1>
 
-      <Button>Start Adventure</Button>
+      <Link to="/createAvatar">
+        <Button>Start the adventure</Button>
+      </Link>
 
       <p className="text-lg sm:text-xl text-muted-foreground mb-12 max-w-md mx-auto leading-relaxed">
         {'Embark on a jungle adventure and find Waldo hidden in the wild!'}
