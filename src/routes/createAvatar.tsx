@@ -5,6 +5,8 @@ import {
   AutoModel,
   AutoProcessor,
   RawImage,
+  Processor,
+  PreTrainedModel,
 } from '@huggingface/transformers';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
@@ -15,20 +17,20 @@ export const Route = createFileRoute('/createAvatar')({
 });
 
 function RouteComponent() {
-  const [images, setImages] = useState([]);
-  const [processedImages, setProcessedImages] = useState([]);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [isDownloadReady, setIsDownloadReady] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [images, setImages] = useState<string[]>([]);
+  const [processedImages, setProcessedImages] = useState<string[]>([]);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [isDownloadReady, setIsDownloadReady] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<any>(null);
 
-  const modelRef = useRef(null);
-  const processorRef = useRef(null);
+  const modelRef = useRef<PreTrainedModel>(null);
+  const processorRef = useRef<Processor>(null);
 
   useEffect(() => {
     (async () => {
       try {
-        if (!navigator.gpu) {
+        if (!('gpu' in navigator) || !env.backends.onnx.wasm) {
           throw new Error('WebGPU is not supported in this browser.');
         }
         const model_id = 'Xenova/modnet';
@@ -44,7 +46,7 @@ function RouteComponent() {
     })();
   }, []);
 
-  const onDrop = useCallback((acceptedFiles) => {
+  const onDrop = useCallback((acceptedFiles: Blob[]) => {
     setImages((prevImages) => [
       ...prevImages,
       ...acceptedFiles.map((file) => URL.createObjectURL(file)),
@@ -64,7 +66,7 @@ function RouteComponent() {
     },
   });
 
-  const removeImage = (index) => {
+  const removeImage = (index: number) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
     setProcessedImages((prevProcessed) =>
       prevProcessed.filter((_, i) => i !== index)
@@ -75,8 +77,8 @@ function RouteComponent() {
     setIsProcessing(true);
     setProcessedImages([]);
 
-    const model = modelRef.current;
-    const processor = processorRef.current;
+    const model = modelRef.current as PreTrainedModel;
+    const processor = processorRef.current as Processor;
 
     for (let i = 0; i < images.length; ++i) {
       // Load image
@@ -99,7 +101,7 @@ function RouteComponent() {
       const canvas = document.createElement('canvas');
       canvas.width = img.width;
       canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
       // Draw original image output to canvas
       ctx.drawImage(img.toCanvas(), 0, 0);
@@ -126,7 +128,7 @@ function RouteComponent() {
       (image, i) =>
         new Promise((resolve) => {
           const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
+          const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
           const img = new Image();
           img.src = processedImages[i] || image;
@@ -157,7 +159,7 @@ function RouteComponent() {
     setIsDownloadReady(false);
   };
 
-  const copyToClipboard = async (url) => {
+  const copyToClipboard = async (url: string) => {
     try {
       // Fetch the image from the URL and convert it to a Blob
       const response = await fetch(url);
@@ -175,7 +177,7 @@ function RouteComponent() {
     }
   };
 
-  const downloadImage = (url) => {
+  const downloadImage = (url: string) => {
     const link = document.createElement('a');
     link.href = url;
     link.download = 'image.png';
