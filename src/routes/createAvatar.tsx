@@ -11,6 +11,7 @@ import {
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { createFileRoute } from '@tanstack/react-router';
+import { CameraCapture } from '@/components/CameraCapture';
 
 export const Route = createFileRoute('/createAvatar')({
   component: RouteComponent,
@@ -23,6 +24,7 @@ function RouteComponent() {
   const [isDownloadReady, setIsDownloadReady] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
+  const [showCamera, setShowCamera] = useState<boolean>(false);
 
   const modelRef = useRef<PreTrainedModel>(null);
   const processorRef = useRef<Processor>(null);
@@ -72,6 +74,12 @@ function RouteComponent() {
       prevProcessed.filter((_, i) => i !== index)
     );
   };
+
+  const handleCameraCapture = useCallback((blob: Blob) => {
+    const imageUrl = URL.createObjectURL(blob);
+    setImages((prevImages) => [...prevImages, imageUrl]);
+    setShowCamera(false);
+  }, []);
 
   const processImages = async () => {
     setIsProcessing(true);
@@ -265,6 +273,12 @@ function RouteComponent() {
         </div>
         <div className="flex flex-col items-center gap-4 mb-8">
           <button
+            onClick={() => setShowCamera(true)}
+            className="px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-black transition-colors duration-200 text-lg font-semibold"
+          >
+            📷 Take a Picture
+          </button>
+          <button
             onClick={processImages}
             disabled={isProcessing || images.length === 0}
             className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-black disabled:bg-gray-700 disabled:cursor-not-allowed transition-colors duration-200 text-lg font-semibold"
@@ -325,6 +339,13 @@ function RouteComponent() {
             </div>
           ))}
         </div>
+
+        {showCamera && (
+          <CameraCapture
+            onCapture={handleCameraCapture}
+            onClose={() => setShowCamera(false)}
+          />
+        )}
       </div>
     </div>
   );
