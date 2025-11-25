@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { getUser, type User } from '@/database/database';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Scanner, type IDetectedBarcode } from '@yudiel/react-qr-scanner';
-import { getUser, User } from '@/database/database';
 
 export const Route = createFileRoute('/findWaldo')({
   component: RouteComponent,
@@ -32,28 +32,26 @@ function FindWaldoComponent({ profile }: FindWaldoComponentProps) {
 
 function RouteComponent() {
   const { id } = Route.useSearch();
-  const [profile, setProfile] = useState<User | null>(null);
+  const [user, setUser] = useState<User>();
 
   function handleScanResult(result: IDetectedBarcode[]) {
     console.log(result);
   }
 
   useEffect(() => {
-    const loadUser = async () => {
-      const user = await getUser(id);
-      setProfile(user);
-    };
-    loadUser();
-  }, [id]);
+    getUser(id as string).then((response) =>
+      response ? setUser(response) : null
+    );
+  }, []);
 
-  if (!profile) {
+  if (!user) {
     return <div>Loading...</div>;
   }
 
   return (
     <>
       <div className="h-dvh w-full flex flex-col">
-        <FindWaldoComponent profile={profile} />
+        <FindWaldoComponent profile={user} />
 
         <div className="absolute flex gap-2">
           <Link to="/askWaldo" search={{ id }}>
