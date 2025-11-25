@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { child, get, getDatabase, ref, set } from "firebase/database";
+import { child, equalTo, get, getDatabase, orderByChild, query, ref, set } from "firebase/database";
 
 export const myIdKey = "whereIsWaldoId";
 export const myNameKey = "whereIsWaldoName";
@@ -13,6 +13,19 @@ export class User {
     readonly id: string;
     readonly name: string;
     readonly imageBase64?: string;
+}
+
+export class Answer {
+    constructor(id: string, from: string, to: string, answers: string[]){
+        this.id = id;
+        this.from = from;
+        this.to = to;
+        this.answers = answers;
+    }
+    readonly id: string;
+    readonly from: string;
+    readonly to: string;
+    readonly answers: string[];
 }
 
 export async function getMe(): Promise<User | null> {
@@ -62,6 +75,47 @@ export async function createUser(name: string, image?: string): Promise<string> 
         id: existingId ?? newId,
         name: name,
         imageBase64: image,
+    });
+    return newId;
+}
+
+export async function getFoundUsers(): Promise<User[]> {
+    const me = localStorage.getItem(myIdKey);
+    if(!me){
+        console.error("Cant find myself");
+        return []; 
+    }
+    const db = getDatabase();
+    const answersRef = ref(db, 'answers');
+    const answersSnapshot = await get(query(answersRef, orderByChild('from'), equalTo(me)));
+    const userIds: string[] = [];
+    answersSnapshot.forEach((ans) => {
+        const answer = ans.val() as Answer;
+        userIds.push(answer.to);
+    })
+    const usersRef = ref(db, 'users');
+    const usersSnapshot = await get(usersRef);
+    const users: User[] = [];
+    if(usersSnapshot.exists()){
+        usersSnapshot.forEach((user) => {users.push(user.val());})
+    }
+    return users.filter((user) => userIds.includes(user.id));
+
+}
+
+export async function submitAnswer(to: string, answers: string[]) {
+    const me = localStorage.getItem(myIdKey);
+    if(!me){
+        console.error("Cant find myself");
+        return ''; 
+    }
+    const db = getDatabase();
+    const newId = crypto.randomUUID();
+    await set(ref(db, 'answers/' + newId), {
+        id: newId,
+        from: me,
+        to: to,
+        answers: answers,
     });
     return newId;
 }
