@@ -24,6 +24,8 @@ export default function SplashScreen() {
         </span>
       </h1>
 
+      { user?.imageBase64 && <img className='w-200px' src={user?.imageBase64} /> }
+
       <Link to="/createAvatar">
         <Button>Start the adventure</Button>
       </Link>
