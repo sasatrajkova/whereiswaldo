@@ -11,6 +11,7 @@ import {
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { createFileRoute } from '@tanstack/react-router';
+import { createUser } from '@/database/database';
 
 export const Route = createFileRoute('/createAvatar')({
   component: RouteComponent,
@@ -18,6 +19,7 @@ export const Route = createFileRoute('/createAvatar')({
 
 function RouteComponent() {
   const [images, setImages] = useState<string[]>([]);
+  const [username, setUsername] = useState<string>('');
   const [processedImages, setProcessedImages] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isDownloadReady, setIsDownloadReady] = useState<boolean>(false);
@@ -76,6 +78,7 @@ function RouteComponent() {
   const processImages = async () => {
     setIsProcessing(true);
     setProcessedImages([]);
+    createUser(username);
 
     const model = modelRef.current as PreTrainedModel;
     const processor = processorRef.current as Processor;
@@ -264,6 +267,7 @@ function RouteComponent() {
           <p className="text-sm text-gray-400">or click to select files</p>
         </div>
         <div className="flex flex-col items-center gap-4 mb-8">
+          <input className='bg-white text-black' onChange={(value) => setUsername(value.target.value)}/>
           <button
             onClick={processImages}
             disabled={isProcessing || images.length === 0}

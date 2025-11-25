@@ -53,7 +53,8 @@ export function setupFirebase(){
       projectId: "where-is-waldo-hackathon-2025",
       storageBucket: "where-is-waldo-hackathon-2025.firebasestorage.app",
       messagingSenderId: "712756908798",
-      appId: "1:712756908798:web:bc8743c60a9b6d535ccbaf"
+      appId: "1:712756908798:web:bc8743c60a9b6d535ccbaf",
+      databaseURL: 'https://where-is-waldo-hackathon-2025-default-rtdb.europe-west1.firebasedatabase.app'
     };
     
     // Initialize Firebase
