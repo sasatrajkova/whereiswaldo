@@ -1,5 +1,6 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState } from 'react';
 import Webcam from 'react-webcam';
+import WaldoOverlay from '@/assets/WaldoOverlay.png';
 
 interface CameraCaptureProps {
   onCapture: (blob: Blob) => void;
@@ -8,18 +9,66 @@ interface CameraCaptureProps {
 
 export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
   const webcamRef = useRef<Webcam>(null);
+  const overlayRef = useRef<HTMLImageElement>(null);
+  const [isCameraReady, setIsCameraReady] = useState(false);
+
+  const drawScreenshot = (
+    ctx: CanvasRenderingContext2D,
+    img: HTMLImageElement
+  ) => {
+    ctx.drawImage(img, 0, 0);
+  };
+
+  const drawOverlay = (
+    ctx: CanvasRenderingContext2D,
+    canvas: HTMLCanvasElement
+  ) => {
+    if (overlayRef.current) {
+      ctx.drawImage(overlayRef.current, 0, 0, canvas.width, canvas.height);
+    }
+  };
+
+  const convertCanvasToBlob = (
+    canvas: HTMLCanvasElement,
+    callback: (blob: Blob) => void
+  ) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        callback(blob);
+      }
+    }, 'image/png');
+  };
+
+  const callOnCapture = (blob: Blob) => {
+    onCapture(blob);
+    onClose();
+  };
 
   const handleCapture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot();
     if (imageSrc) {
-      fetch(imageSrc)
-        .then((res) => res.blob())
-        .then((blob) => {
-          onCapture(blob);
-          onClose();
-        });
+      // Create a canvas to composite the screenshot and overlay
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      if (!ctx) return;
+
+      const img = new Image();
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        drawScreenshot(ctx, img);
+        drawOverlay(ctx, canvas);
+        convertCanvasToBlob(canvas, callOnCapture);
+      };
+      img.src = imageSrc;
     }
   }, [onCapture, onClose]);
+
+  const handleUserMedia = () => {
+    setIsCameraReady(true);
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
@@ -27,7 +76,7 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
         <div className="p-6">
           <h2 className="text-2xl font-bold text-white mb-4">Take a Photo</h2>
 
-          <div className="mb-4 bg-black rounded-md overflow-hidden">
+          <div className="mb-4 bg-black rounded-md overflow-hidden relative">
             <Webcam
               ref={webcamRef}
               screenshotFormat="image/png"
@@ -36,7 +85,22 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
               }}
               mirrored={true}
               className="w-full"
+              onUserMedia={handleUserMedia}
             />
+            <img
+              ref={overlayRef}
+              src={WaldoOverlay}
+              alt="Waldo Overlay"
+              className="absolute inset-0 w-full h-full pointer-events-none"
+              style={{ display: 'none' }}
+            />
+            {isCameraReady && (
+              <img
+                src={WaldoOverlay}
+                alt="Waldo Overlay Preview"
+                className="absolute inset-0 w-full h-full pointer-events-none"
+              />
+            )}
           </div>
 
           <div className="flex gap-4 justify-center">

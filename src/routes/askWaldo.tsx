@@ -6,15 +6,20 @@ import { useState, type FormEvent } from 'react';
 
 export const Route = createFileRoute('/askWaldo')({
   component: RouteComponent,
+  validateSearch: (search) => ({
+    id: search.id ?? '',
+  }),
 });
 
 function RouteComponent() {
+  const { id } = Route.useSearch();
   const [answer, setAnswer] = useState<string>('');
+  const [question] = useState(() => getQuestion());
   const navigate = useNavigate();
 
   function handleFormSubmit(e: FormEvent) {
     e.preventDefault();
-    console.log(answer.trim());
+    console.log(id, answer.trim());
 
     setAnswer('');
 
@@ -28,7 +33,7 @@ function RouteComponent() {
         className="flex flex-col gap-3 w-full px-8"
       >
         <img src="https://picsum.photos/200" className="object-cover" />
-        <h1>What is your name?</h1>
+        <h1>{question}</h1>
         <Input
           type="text"
           placeholder="Add your answer in here"
@@ -43,6 +48,6 @@ function RouteComponent() {
   );
 }
 
-const getQuestion = async () => {
+const getQuestion = () => {
   return questions[Math.floor(Math.random() * questions.length)];
 };
