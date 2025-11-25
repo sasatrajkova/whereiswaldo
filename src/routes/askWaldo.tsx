@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import questions from '../database/questions.json';
 import { useState, type FormEvent } from 'react';
 
 export const Route = createFileRoute('/askWaldo')({
@@ -41,3 +42,7 @@ function RouteComponent() {
     </>
   );
 }
+
+const getQuestion = async () => {
+  return questions[Math.floor(Math.random() * questions.length)];
+};
