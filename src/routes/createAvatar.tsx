@@ -162,7 +162,6 @@ function RouteComponent() {
           className="bg-white text-black"
           placeholder="Enter your name"
           value={username}
-          value={username}
           onChange={(value) => setUsername(value.target.value)}
         />
         {image && (
@@ -170,7 +169,7 @@ function RouteComponent() {
             <img
               src={processedImage || image}
               alt={`A wonderful Waldo`}
-              className="rounded-xl object-cover w-full h-48"
+              className="rounded-xl object-cover"
             />
           </div>
         )}
