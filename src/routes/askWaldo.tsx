@@ -2,8 +2,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import questions from '../database/questions.json';
-import { useState, type FormEvent } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { submitAnswer } from '@/database/database';
+import { getUser, type User } from '@/database/database';
 
 export const Route = createFileRoute('/askWaldo')({
   component: RouteComponent,
@@ -17,6 +18,13 @@ function RouteComponent() {
   const [answer, setAnswer] = useState<string>('');
   const [question] = useState(() => getQuestion());
   const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    getUser(id as string).then((response) =>
+      response ? setUser(response) : null
+    );
+  }, []);
 
   function handleFormSubmit(e: FormEvent) {
     e.preventDefault();
@@ -33,7 +41,7 @@ function RouteComponent() {
         onSubmit={(e) => handleFormSubmit(e)}
         className="flex flex-col gap-3 w-full px-8"
       >
-        <img src="https://picsum.photos/200" className="object-cover" />
+        <img src={user?.imageBase64} className="object-cover" />
         <h1>{question}</h1>
         <Input
           type="text"
