@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { child, get, getDatabase, ref, set } from "firebase/database";
 
 export const myIdKey = "whereIsWaldoId";
+export const myNameKey = "whereIsWaldoName";
 
 export class User {
     constructor(id: string, name: string, image?: string){
@@ -56,6 +57,7 @@ export async function createUser(name: string, image?: string): Promise<string> 
     if(!existingId){
         localStorage.setItem(myIdKey, newId);
     }
+    localStorage.setItem(myNameKey, name);
     await set(ref(db, 'users/' + (existingId ?? newId)), {
         id: existingId ?? newId,
         name: name,

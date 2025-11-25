@@ -8,7 +8,7 @@ import {
   PreTrainedModel,
 } from '@huggingface/transformers';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { createUser } from '@/database/database';
+import { createUser, myNameKey } from '@/database/database';
 import { CameraCapture } from '@/components/CameraCapture';
 import WaldoBackground from '@/assets/WaldoBackground.jpg';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,9 @@ export const Route = createFileRoute('/createAvatar')({
 
 function RouteComponent() {
   const [image, setImage] = useState<string>('');
-  const [username, setUsername] = useState<string>('');
+  const [username, setUsername] = useState<string>(
+    localStorage.getItem(myNameKey) ?? ''
+  );
   const [processedImage, setProcessedImage] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -159,6 +161,7 @@ function RouteComponent() {
         <Input
           className="bg-white text-black"
           placeholder="Enter your name"
+          value={username}
           value={username}
           onChange={(value) => setUsername(value.target.value)}
         />
