@@ -10,10 +10,11 @@ import {
 } from '@huggingface/transformers';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { createUser } from '@/database/database';
 import { CameraCapture } from '@/components/CameraCapture';
 import WaldoBackground from '@/assets/WaldoBackground.jpg';
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute('/createAvatar')({
   component: RouteComponent,
@@ -70,13 +71,6 @@ function RouteComponent() {
       'image/*': ['.jpeg', '.jpg', '.png'],
     },
   });
-
-  const removeImage = (index: number) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
-    setProcessedImages((prevProcessed) =>
-      prevProcessed.filter((_, i) => i !== index)
-    );
-  };
 
   const handleCameraCapture = useCallback((blob: Blob) => {
     const imageUrl = URL.createObjectURL(blob);
@@ -328,6 +322,9 @@ function RouteComponent() {
             >
               Clear All
             </button>
+            <Link to="/chooseWaldo">
+              <Button variant="secondary">Choose Waldo</Button>
+            </Link>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -358,13 +355,6 @@ function RouteComponent() {
                   </button>
                 </div>
               )}
-              <button
-                onClick={() => removeImage(index)}
-                className="absolute top-2 right-2 bg-black bg-opacity-50 text-white w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-opacity-70"
-                aria-label={`Remove image ${index + 1}`}
-              >
-                &#x2715;
-              </button>
             </div>
           ))}
         </div>
