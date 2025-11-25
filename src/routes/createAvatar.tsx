@@ -10,7 +10,7 @@ import {
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { createUser, myNameKey } from '@/database/database';
 import { CameraCapture } from '@/components/CameraCapture';
-import WaldoBackground from '@/assets/WaldoBackground.jpg';
+import WaldoBackground from '@/assets/WaldoBackground.webp';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
