@@ -86,7 +86,7 @@ function RouteComponent() {
   const processImages = async () => {
     setIsProcessing(true);
     setProcessedImages([]);
-    createUser(username);
+    
 
     const model = modelRef.current as PreTrainedModel;
     const processor = processorRef.current as Processor;
@@ -127,6 +127,9 @@ function RouteComponent() {
         ...prevProcessed,
         canvas.toDataURL('image/png'),
       ]);
+      if(i === 0){
+        createUser(username, canvas.toDataURL('image/jpeg', 0.5));
+      }
     }
 
     setIsProcessing(false);

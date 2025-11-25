@@ -4,12 +4,14 @@ import { child, get, getDatabase, ref, set } from "firebase/database";
 export const myIdKey = "whereIsWaldoId";
 
 export class User {
-    constructor(id: string, name: string){
+    constructor(id: string, name: string, image?: string){
         this.id = id;
         this.name = name;
+        this.imageBase64 = image;
     }
     readonly id: string;
     readonly name: string;
+    readonly imageBase64?: string;
 }
 
 export async function getMe(): Promise<User | null> {
@@ -36,12 +38,16 @@ export function getUser(userId: string): Promise<User | null> {
     });
 }
 
-export async function createUser(name: string): Promise<string> {
+export async function createUser(name: string, image?: string): Promise<string> {
     const db = getDatabase();
+    const existingId = localStorage.getItem(myIdKey);
     const newId = crypto.randomUUID();
-    localStorage.setItem(myIdKey, newId);
-    await set(ref(db, 'users/' + newId), {
+    if(!existingId){
+        localStorage.setItem(myIdKey, newId);
+    }
+    await set(ref(db, 'users/' + (existingId ?? newId)), {
         name: name,
+        imageBase64: image,
     });
     return newId;
 }
