@@ -1,7 +1,13 @@
 import { Link } from '@tanstack/react-router';
 import { Button } from './ui/button';
+import { getMe, User } from '@/database/database';
+import { useEffect, useState } from 'react';
 
 export default function SplashScreen() {
+  const [user, setUser] = useState<User>();
+  useEffect(() => {
+    getMe().then((value) => { if (value) { setUser(value) }})
+  }, [])
   return (
     <>
       <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-foreground mb-4 leading-tight">
@@ -14,7 +20,7 @@ export default function SplashScreen() {
             paintOrder: 'stroke fill',
           }}
         >
-          Waldo?
+          {user?.name ?? ' Waldo?'}
         </span>
       </h1>
 

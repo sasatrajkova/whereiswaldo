@@ -11,6 +11,7 @@ import {
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { createFileRoute } from '@tanstack/react-router';
+import { createUser } from '@/database/database';
 import { CameraCapture } from '@/components/CameraCapture';
 
 export const Route = createFileRoute('/createAvatar')({
@@ -19,6 +20,7 @@ export const Route = createFileRoute('/createAvatar')({
 
 function RouteComponent() {
   const [images, setImages] = useState<string[]>([]);
+  const [username, setUsername] = useState<string>('');
   const [processedImages, setProcessedImages] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isDownloadReady, setIsDownloadReady] = useState<boolean>(false);
@@ -84,6 +86,7 @@ function RouteComponent() {
   const processImages = async () => {
     setIsProcessing(true);
     setProcessedImages([]);
+    createUser(username);
 
     const model = modelRef.current as PreTrainedModel;
     const processor = processorRef.current as Processor;
@@ -272,6 +275,7 @@ function RouteComponent() {
           <p className="text-sm text-gray-400">or click to select files</p>
         </div>
         <div className="flex flex-col items-center gap-4 mb-8">
+          <input className='bg-white text-black' onChange={(value) => setUsername(value.target.value)}/>
           <button
             onClick={() => setShowCamera(true)}
             className="px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-black transition-colors duration-200 text-lg font-semibold"
