@@ -48,15 +48,22 @@ body {
   display: flex;
   place-content: center;
   width: 100%;
-  min-height: 100dvh;
-  background: #d2dcb6;
+  height: 100dvh;
+  background-image: url('/src/assets/WaldoBackground.webp');
+  background-size: cover;
+  background-position: center;
+  @apply backdrop-contrast-75;
+  @apply backdrop-blur-sm;
 }
 
 #root {
+  @apply rounded-xl;
   width: 550px;
   min-width: 320px;
   background: #f1f3e0;
   overflow: auto;
+  box-sizing: border-box;
+  margin: 10px;
 }
 
 h1 {
