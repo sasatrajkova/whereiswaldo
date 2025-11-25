@@ -13,6 +13,7 @@ import { saveAs } from 'file-saver';
 import { createFileRoute } from '@tanstack/react-router';
 import { createUser } from '@/database/database';
 import { CameraCapture } from '@/components/CameraCapture';
+import WaldoBackground from '@/assets/WaldoBackground.jpg';
 
 export const Route = createFileRoute('/createAvatar')({
   component: RouteComponent,
@@ -86,7 +87,6 @@ function RouteComponent() {
   const processImages = async () => {
     setIsProcessing(true);
     setProcessedImages([]);
-    
 
     const model = modelRef.current as PreTrainedModel;
     const processor = processorRef.current as Processor;
@@ -114,20 +114,39 @@ function RouteComponent() {
       canvas.height = img.height;
       const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-      // Draw original image output to canvas
-      ctx.drawImage(img.toCanvas(), 0, 0);
+      // Draw background image
+      const bgImg = new Image();
+      bgImg.src = WaldoBackground;
+      await new Promise((resolve) => {
+        bgImg.onload = () => {
+          ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+          resolve(null);
+        };
+      });
 
-      // Update alpha channel
-      const pixelData = ctx.getImageData(0, 0, img.width, img.height);
-      for (let i = 0; i < maskData.length; ++i) {
-        pixelData.data[4 * i + 3] = maskData[i];
+      // Draw original image on top with mask
+      const originalCanvas = img.toCanvas();
+      const originalData = originalCanvas
+        .getContext('2d')
+        ?.getImageData(0, 0, img.width, img.height);
+
+      if (originalData) {
+        for (let j = 0; j < maskData.length; ++j) {
+          originalData.data[4 * j + 3] = maskData[j];
+        }
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = img.width;
+        tempCanvas.height = img.height;
+        const tempCtx = tempCanvas.getContext('2d') as CanvasRenderingContext2D;
+        tempCtx.putImageData(originalData, 0, 0);
+        ctx.drawImage(tempCanvas, 0, 0);
       }
-      ctx.putImageData(pixelData, 0, 0);
+
       setProcessedImages((prevProcessed) => [
         ...prevProcessed,
         canvas.toDataURL('image/png'),
       ]);
-      if(i === 0){
+      if (i === 0) {
         createUser(username, canvas.toDataURL('image/jpeg', 0.5));
       }
     }
@@ -278,7 +297,10 @@ function RouteComponent() {
           <p className="text-sm text-gray-400">or click to select files</p>
         </div>
         <div className="flex flex-col items-center gap-4 mb-8">
-          <input className='bg-white text-black' onChange={(value) => setUsername(value.target.value)}/>
+          <input
+            className="bg-white text-black"
+            onChange={(value) => setUsername(value.target.value)}
+          />
           <button
             onClick={() => setShowCamera(true)}
             className="px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-black transition-colors duration-200 text-lg font-semibold"
