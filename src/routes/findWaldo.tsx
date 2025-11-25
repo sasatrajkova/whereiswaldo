@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { getUser, type User } from '@/database/database';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { Scanner, type IDetectedBarcode } from '@yudiel/react-qr-scanner';
 
 export const Route = createFileRoute('/findWaldo')({
@@ -16,27 +16,30 @@ type FindWaldoComponentProps = {
 };
 
 function FindWaldoComponent({ profile }: FindWaldoComponentProps) {
+  const { id } = Route.useSearch();
+  const navigate = useNavigate();
+
+  function handleScanResult(result: IDetectedBarcode[]) {
+    if (id === result[0].rawValue) {
+      navigate({ to: '/askWaldo', search: { id: profile.id } });
+    }
+  }
+
   return (
-    <>
-      <div className="h-dvh w-full flex flex-col">
-        <div className="w-full flex-1 bg-white flex h-50">
-          <img src={profile.imageBase64} className="object-cover flex-1" />
-        </div>
-        <div className="w-full flex-1 bg-black h-50">
-          <Scanner onScan={(result) => handleScanResult(result)} />
-        </div>
+    <div className="h-dvh w-full flex flex-col">
+      <div className="w-full flex-1 bg-white flex h-50">
+        <img src={profile.imageBase64} className="object-cover flex-1" />
       </div>
-    </>
+      <div className="w-full flex-1 bg-black h-50">
+        <Scanner onScan={handleScanResult} />
+      </div>
+    </div>
   );
 }
 
 function RouteComponent() {
   const { id } = Route.useSearch();
-  const [user, setUser] = useState<User>();
-
-  function handleScanResult(result: IDetectedBarcode[]) {
-    console.log(result);
-  }
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     getUser(id as string).then((response) =>
