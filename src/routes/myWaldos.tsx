@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
 
@@ -12,22 +12,21 @@ type WaldoProfile = {
   title: string;
   id: string;
 };
-type WaldoProfileComponentProps = {
+
+type MyWaldoProfileComponentProps = {
   profile: WaldoProfile;
 };
 
-function WaldoProfileComponent({ profile }: WaldoProfileComponentProps) {
+function MyWaldoProfileComponent({ profile }: MyWaldoProfileComponentProps) {
   return (
-    <Link to="/findWaldo" search={{ id: profile.id }}>
-      <Card className="w-full cursor-pointer">
-        <CardHeader>
-          <CardTitle>{profile.title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <img src={profile.image} />
-        </CardContent>
-      </Card>
-    </Link>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>{profile.title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <img src={profile.image} />
+      </CardContent>
+    </Card>
   );
 }
 
@@ -62,14 +61,18 @@ function RouteComponent() {
   return (
     <>
       <h1>My waldos!</h1>
+      <h2>You already found {waldos.length} waldos!</h2>
       <div className="grid grid-cols-3 gap-2">
         {waldos.map((waldo) => (
-          <WaldoProfileComponent
+          <MyWaldoProfileComponent
             profile={waldo}
             key={waldo.id}
-          ></WaldoProfileComponent>
+          ></MyWaldoProfileComponent>
         ))}
       </div>
+      <Link to="/chooseWaldo">
+        <Button className="w-100">Find the next Waldo</Button>
+      </Link>
     </>
   );
 }

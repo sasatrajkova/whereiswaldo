@@ -6,16 +6,20 @@ import { useState, type FormEvent } from 'react';
 
 export const Route = createFileRoute('/askWaldo')({
   component: RouteComponent,
+  validateSearch: (search) => ({
+    id: search.id ?? '',
+  }),
 });
 
 function RouteComponent() {
+  const { id } = Route.useSearch();
   const [answer, setAnswer] = useState<string>('');
   const [question] = useState(() => getQuestion());
   const navigate = useNavigate();
 
   function handleFormSubmit(e: FormEvent) {
     e.preventDefault();
-    console.log(answer.trim());
+    console.log(id, answer.trim());
 
     setAnswer('');
 
