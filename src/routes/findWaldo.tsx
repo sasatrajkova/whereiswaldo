@@ -4,9 +4,14 @@ import { Scanner, type IDetectedBarcode } from '@yudiel/react-qr-scanner';
 
 export const Route = createFileRoute('/findWaldo')({
   component: RouteComponent,
+  validateSearch: (search) => ({
+    id: search.id ?? '',
+  }),
 });
 
 function RouteComponent() {
+  const { id } = Route.useSearch();
+
   function handleScanResult(result: IDetectedBarcode[]) {
     console.log(result);
   }
@@ -25,7 +30,7 @@ function RouteComponent() {
         </div>
 
         <div className="absolute flex gap-2">
-          <Link to="/askWaldo">
+          <Link to="/askWaldo" search={{ id }}>
             <Button type="submit">Found waldo</Button>
           </Link>
           <Link to="/chooseWaldo">
