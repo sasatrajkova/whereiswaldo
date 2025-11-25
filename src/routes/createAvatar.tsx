@@ -11,7 +11,7 @@ import {
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { createUser } from '@/database/database';
+import { createUser, myNameKey } from '@/database/database';
 import { CameraCapture } from '@/components/CameraCapture';
 import WaldoBackground from '@/assets/WaldoBackground.jpg';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,7 @@ export const Route = createFileRoute('/createAvatar')({
 
 function RouteComponent() {
   const [images, setImages] = useState<string[]>([]);
-  const [username, setUsername] = useState<string>('');
+  const [username, setUsername] = useState<string>(localStorage.getItem(myNameKey) ?? '');
   const [processedImages, setProcessedImages] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isDownloadReady, setIsDownloadReady] = useState<boolean>(false);
@@ -293,6 +293,7 @@ function RouteComponent() {
         <div className="flex flex-col items-center gap-4 mb-8">
           <input
             className="bg-white text-black"
+            value={username}
             onChange={(value) => setUsername(value.target.value)}
           />
           <button
