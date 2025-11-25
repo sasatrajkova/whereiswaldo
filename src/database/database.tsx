@@ -38,6 +38,17 @@ export function getUser(userId: string): Promise<User | null> {
     });
 }
 
+export async function getUsers(): Promise<User[]> {
+    const usersRef = ref(getDatabase(), 'users');
+    const snapshot = await get(usersRef);
+    const users: User[] = [];
+    const myId = localStorage.getItem(myIdKey);
+    if(snapshot.exists()){
+        snapshot.forEach((snap) => {users.push(snap.val());})
+    }
+    return users.filter((user) => user.id !== myId);
+}
+
 export async function createUser(name: string, image?: string): Promise<string> {
     const db = getDatabase();
     const existingId = localStorage.getItem(myIdKey);
@@ -46,6 +57,7 @@ export async function createUser(name: string, image?: string): Promise<string> 
         localStorage.setItem(myIdKey, newId);
     }
     await set(ref(db, 'users/' + (existingId ?? newId)), {
+        id: existingId ?? newId,
         name: name,
         imageBase64: image,
     });

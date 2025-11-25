@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getUsers, User } from '@/database/database';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
@@ -6,14 +7,14 @@ export const Route = createFileRoute('/chooseWaldo')({
   component: RouteComponent,
 });
 
-type WaldoProfile = {
-  image: string;
-  title: string;
-  id: string;
-};
+// type WaldoProfile = {
+//   image: string;
+//   title: string;
+//   id: string;
+// };
 
 type WaldoProfileComponentProps = {
-  profile: WaldoProfile;
+  profile: User;
 };
 
 function WaldoProfileComponent({ profile }: WaldoProfileComponentProps) {
@@ -21,10 +22,10 @@ function WaldoProfileComponent({ profile }: WaldoProfileComponentProps) {
     <Link to="/findWaldo" search={{ id: profile.id }}>
       <Card className="w-full cursor-pointer">
         <CardHeader>
-          <CardTitle>{profile.title}</CardTitle>
+          <CardTitle>{profile.name}</CardTitle>
         </CardHeader>
         <CardContent>
-          <img src={profile.image} />
+          <img src={profile.imageBase64} />
         </CardContent>
       </Card>
     </Link>
@@ -32,41 +33,10 @@ function WaldoProfileComponent({ profile }: WaldoProfileComponentProps) {
 }
 
 function RouteComponent() {
-  const [waldos, setWaldos] = useState<WaldoProfile[]>([]);
+  const [waldos, setWaldos] = useState<User[]>([]);
 
   useEffect(() => {
-    Promise.resolve([
-      {
-        image: 'https://picsum.photos/100',
-        title: 'Waldo 1',
-        id: '444',
-      },
-      {
-        image: 'https://picsum.photos/100',
-        title: 'Waldo 2',
-        id: '555',
-      },
-      {
-        image: 'https://picsum.photos/100',
-        title: 'Waldo 3',
-        id: '666',
-      },
-      {
-        image: 'https://picsum.photos/100',
-        title: 'Waldo 4',
-        id: '777',
-      },
-      {
-        image: 'https://picsum.photos/100',
-        title: 'Waldo 5',
-        id: '888',
-      },
-      {
-        image: 'https://picsum.photos/100',
-        title: 'Waldo 6',
-        id: '999',
-      },
-    ]).then((waldos) => setWaldos(waldos));
+    getUsers().then((waldos) => setWaldos(waldos));
   }, []);
 
   return (
