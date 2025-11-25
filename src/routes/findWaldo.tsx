@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button';
+import { getUser, type User } from '@/database/database';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Scanner, type IDetectedBarcode } from '@yudiel/react-qr-scanner';
+import { useEffect, useState } from 'react';
 
 export const Route = createFileRoute('/findWaldo')({
   component: RouteComponent,
@@ -11,6 +13,9 @@ export const Route = createFileRoute('/findWaldo')({
 
 function RouteComponent() {
   const { id } = Route.useSearch();
+  const [user, setUser] = useState<User>();
+
+  useEffect(() => { getUser(id as string).then((response) => response ? setUser(response) : null)}, [])
 
   function handleScanResult(result: IDetectedBarcode[]) {
     console.log(result);
@@ -21,7 +26,7 @@ function RouteComponent() {
       <div className="h-dvh w-full flex flex-col">
         <div className="w-full flex-1 bg-white flex h-50">
           <img
-            src="https://picsum.photos/300"
+            src={user?.imageBase64}
             className="object-cover flex-1"
           />
         </div>
