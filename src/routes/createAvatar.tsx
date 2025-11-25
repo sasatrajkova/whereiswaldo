@@ -72,13 +72,6 @@ function RouteComponent() {
     },
   });
 
-  const removeImage = (index: number) => {
-    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
-    setProcessedImages((prevProcessed) =>
-      prevProcessed.filter((_, i) => i !== index)
-    );
-  };
-
   const handleCameraCapture = useCallback((blob: Blob) => {
     const imageUrl = URL.createObjectURL(blob);
     setImages((prevImages) => [...prevImages, imageUrl]);

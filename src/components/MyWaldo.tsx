@@ -1,4 +1,4 @@
-import { QrCodeIcon, UserCircleIcon } from 'lucide-react';
+import { QrCodeIcon } from 'lucide-react';
 import { Button } from './ui/button';
 import {
   SheetTrigger,
