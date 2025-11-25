@@ -10,7 +10,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: #f1f3e0;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -47,8 +47,21 @@ body {
   margin: 0;
   display: flex;
   place-content: center;
-  min-width: 320px;
+  width: 100%;
   min-height: 100dvh;
+  background: #d2dcb6;
+}
+
+#root {
+  width: 550px;
+  min-width: 320px;
+  background: #f1f3e0;
+  overflow: auto;
+}
+
+h1 {
+  @apply text-2xl;
+  @apply font-bold;
 }
 
 @theme inline {
