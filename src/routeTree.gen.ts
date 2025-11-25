@@ -9,10 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MyWaldosRouteImport } from './routes/myWaldos'
+import { Route as FindWaldoRouteImport } from './routes/findWaldo'
 import { Route as CreateAvatarRouteImport } from './routes/createAvatar'
 import { Route as ChooseWaldoRouteImport } from './routes/chooseWaldo'
+import { Route as AskWaldoRouteImport } from './routes/askWaldo'
 import { Route as IndexRouteImport } from './routes/index'
 
+const MyWaldosRoute = MyWaldosRouteImport.update({
+  id: '/myWaldos',
+  path: '/myWaldos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FindWaldoRoute = FindWaldoRouteImport.update({
+  id: '/findWaldo',
+  path: '/findWaldo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CreateAvatarRoute = CreateAvatarRouteImport.update({
   id: '/createAvatar',
   path: '/createAvatar',
@@ -23,6 +36,11 @@ const ChooseWaldoRoute = ChooseWaldoRouteImport.update({
   path: '/chooseWaldo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AskWaldoRoute = AskWaldoRouteImport.update({
+  id: '/askWaldo',
+  path: '/askWaldo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,36 +49,81 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/askWaldo': typeof AskWaldoRoute
   '/chooseWaldo': typeof ChooseWaldoRoute
   '/createAvatar': typeof CreateAvatarRoute
+  '/findWaldo': typeof FindWaldoRoute
+  '/myWaldos': typeof MyWaldosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/askWaldo': typeof AskWaldoRoute
   '/chooseWaldo': typeof ChooseWaldoRoute
   '/createAvatar': typeof CreateAvatarRoute
+  '/findWaldo': typeof FindWaldoRoute
+  '/myWaldos': typeof MyWaldosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/askWaldo': typeof AskWaldoRoute
   '/chooseWaldo': typeof ChooseWaldoRoute
   '/createAvatar': typeof CreateAvatarRoute
+  '/findWaldo': typeof FindWaldoRoute
+  '/myWaldos': typeof MyWaldosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/chooseWaldo' | '/createAvatar'
+  fullPaths:
+    | '/'
+    | '/askWaldo'
+    | '/chooseWaldo'
+    | '/createAvatar'
+    | '/findWaldo'
+    | '/myWaldos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/chooseWaldo' | '/createAvatar'
-  id: '__root__' | '/' | '/chooseWaldo' | '/createAvatar'
+  to:
+    | '/'
+    | '/askWaldo'
+    | '/chooseWaldo'
+    | '/createAvatar'
+    | '/findWaldo'
+    | '/myWaldos'
+  id:
+    | '__root__'
+    | '/'
+    | '/askWaldo'
+    | '/chooseWaldo'
+    | '/createAvatar'
+    | '/findWaldo'
+    | '/myWaldos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AskWaldoRoute: typeof AskWaldoRoute
   ChooseWaldoRoute: typeof ChooseWaldoRoute
   CreateAvatarRoute: typeof CreateAvatarRoute
+  FindWaldoRoute: typeof FindWaldoRoute
+  MyWaldosRoute: typeof MyWaldosRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/myWaldos': {
+      id: '/myWaldos'
+      path: '/myWaldos'
+      fullPath: '/myWaldos'
+      preLoaderRoute: typeof MyWaldosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/findWaldo': {
+      id: '/findWaldo'
+      path: '/findWaldo'
+      fullPath: '/findWaldo'
+      preLoaderRoute: typeof FindWaldoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/createAvatar': {
       id: '/createAvatar'
       path: '/createAvatar'
@@ -75,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChooseWaldoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/askWaldo': {
+      id: '/askWaldo'
+      path: '/askWaldo'
+      fullPath: '/askWaldo'
+      preLoaderRoute: typeof AskWaldoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,8 +157,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AskWaldoRoute: AskWaldoRoute,
   ChooseWaldoRoute: ChooseWaldoRoute,
   CreateAvatarRoute: CreateAvatarRoute,
+  FindWaldoRoute: FindWaldoRoute,
+  MyWaldosRoute: MyWaldosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
