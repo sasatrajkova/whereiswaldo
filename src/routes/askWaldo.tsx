@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import questions from '../database/questions.json';
 import { useState, type FormEvent } from 'react';
+import { submitAnswer } from '@/database/database';
 
 export const Route = createFileRoute('/askWaldo')({
   component: RouteComponent,
@@ -21,7 +22,7 @@ function RouteComponent() {
     e.preventDefault();
     console.log(id, answer.trim());
 
-    setAnswer('');
+    submitAnswer(id as string, [answer]);
 
     navigate({ to: '/myWaldos' });
   }

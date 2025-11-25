@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getFoundUsers, User } from '@/database/database';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useState, useEffect } from 'react';
 
@@ -7,55 +8,28 @@ export const Route = createFileRoute('/myWaldos')({
   component: RouteComponent,
 });
 
-type WaldoProfile = {
-  image: string;
-  title: string;
-  id: string;
-};
-
 type MyWaldoProfileComponentProps = {
-  profile: WaldoProfile;
+  profile: User;
 };
 
 function MyWaldoProfileComponent({ profile }: MyWaldoProfileComponentProps) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>{profile.title}</CardTitle>
+        <CardTitle>{profile.name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <img src={profile.image} />
+        <img src={profile.imageBase64} />
       </CardContent>
     </Card>
   );
 }
 
 function RouteComponent() {
-  const [waldos, setWaldos] = useState<WaldoProfile[]>([]);
+  const [waldos, setWaldos] = useState<User[]>([]);
 
   useEffect(() => {
-    Promise.resolve([
-      {
-        image: 'https://picsum.photos/100',
-        title: 'Waldo 1',
-        id: '444',
-      },
-      {
-        image: 'https://picsum.photos/100',
-        title: 'Waldo 2',
-        id: '555',
-      },
-      {
-        image: 'https://picsum.photos/100',
-        title: 'Waldo 3',
-        id: '666',
-      },
-      {
-        image: 'https://picsum.photos/100',
-        title: 'Waldo 4',
-        id: '777',
-      },
-    ]).then((waldos) => setWaldos(waldos));
+    getFoundUsers().then((res) => setWaldos(res.filter((user) => !!user)));
   }, []);
 
   return (
