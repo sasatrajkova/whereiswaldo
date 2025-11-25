@@ -22,6 +22,8 @@ function FindWaldoComponent({ profile }: FindWaldoComponentProps) {
   function handleScanResult(result: IDetectedBarcode[]) {
     if (id === result[0].rawValue) {
       navigate({ to: '/askWaldo', search: { id: profile.id } });
+    } else {
+      navigate({ to: '/badWaldo', search: { id: profile.id } });
     }
   }
 
