@@ -91,14 +91,14 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
               ref={overlayRef}
               src={WaldoOverlay}
               alt="Waldo Overlay"
-              className="absolute inset-0 w-full h-full pointer-events-none object-scale-down"
+              className="absolute inset-0 w-full h-full pointer-events-none object-cover"
               style={{ display: 'none' }}
             />
             {isCameraReady && (
               <img
                 src={WaldoOverlay}
                 alt="Waldo Overlay Preview"
-                className="absolute inset-0 w-full h-full pointer-events-none object-scale-down"
+                className="absolute inset-0 w-full h-full pointer-events-none object-cover"
               />
             )}
           </div>
