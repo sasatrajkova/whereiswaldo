@@ -21,7 +21,7 @@ function WaldoProfileComponent({ profile }: WaldoProfileComponentProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <img src={profile.imageBase64} className="w-24 h-24 object-cover" />
+          <img src={profile.imageBase64} className="w-30 h-30 object-cover" />
         </CardContent>
       </Card>
     </Link>
@@ -36,7 +36,7 @@ function RouteComponent() {
   }, []);
 
   return (
-    <>
+    <div className='p-2'>
       <h1>Choose your next Waldo</h1>
       {waldos.length > 0 && (
         <div className="grid grid-cols-3 gap-2 overflow-auto">
@@ -53,6 +53,6 @@ function RouteComponent() {
           <small className="font-mono">No waldos available :(</small>
         </div>
       )}
-    </>
+    </div>
   );
 }
