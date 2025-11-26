@@ -29,7 +29,7 @@ function FindWaldoComponent({ profile }: FindWaldoComponentProps) {
 
   return (
     <>
-      <h1 className="pt-10 text-center">Find Waldo!</h1>
+      <h1 className="mt-10 text-center">Find Waldo!</h1>
       <div className="h-dvh w-full flex flex-col pb-30">
         <div className="w-full flex-1 flex h-[50%]">
           <img

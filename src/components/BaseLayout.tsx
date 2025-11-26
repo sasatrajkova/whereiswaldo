@@ -11,13 +11,13 @@ export default function BaseLayout({ children }: LayoutProps) {
     <>
       <main className="relative flex flex-col items-center justify-center h-full gap-4 p-8">
         {children}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 mb-10">
-          <MyWaldoComponent />
-        </div>
-        <div className="absolute bottom-0 left-0 ms-10 mb-10">
-          <NavigationComponent />
-        </div>
       </main>
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 mb-3">
+        <MyWaldoComponent />
+      </div>
+      <div className="absolute bottom-0 left-0 ms-3 mb-3">
+        <NavigationComponent />
+      </div>
     </>
   );
 }
