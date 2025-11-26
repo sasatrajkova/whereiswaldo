@@ -1,16 +1,26 @@
 import { useRef, useCallback, useState } from 'react';
 import Webcam from 'react-webcam';
-import WaldoOverlay from '@/assets/WaldoOverlay.png';
+import WaldoOverlay from '@/assets/WaldoOverlay.webp';
 import SantaOverlay from '@/assets/SantaOverlay.webp';
+import PizzaOverlay from '@/assets/PizzaOverlay.webp';
 import { Button } from '@/components/ui/button';
 
 interface CameraCaptureProps {
   onCapture: (blob: Blob) => void;
-  overlayType: 'waldo' | 'santa';
+  overlayType: 'waldo' | 'santa' | 'pizza';
 }
 
-const getOverlay = (type: 'waldo' | 'santa') =>
-  type === 'santa' ? SantaOverlay : WaldoOverlay;
+const getOverlay = (type: 'waldo' | 'santa' | 'pizza') => {
+  switch (type) {
+    case 'santa':
+      return SantaOverlay;
+    case 'pizza':
+      return PizzaOverlay;
+    case 'waldo':
+    default:
+      return WaldoOverlay;
+  }
+};
 
 const calculateOverlayCrop = (
   overlayImg: HTMLImageElement,

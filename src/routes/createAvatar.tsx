@@ -179,7 +179,7 @@ function RouteComponent() {
               <Button variant="outline">Choose filter</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              {['waldo', 'santa'].map((overlay) => (
+              {['waldo', 'santa', 'pizza'].map((overlay) => (
                 <DropdownMenuCheckboxItem
                   key={overlay}
                   checked={chooseOverlay === overlay}
