@@ -33,9 +33,9 @@ function FindWaldoComponent({ profile }: FindWaldoComponentProps) {
       <div className="w-full flex flex-col h-full">
         <img
           src={profile.imageBase64}
-          className="object-cover rounded-t-xl h-1/2"
+          className="object-cover rounded-t-xl h-[45%]"
         />
-        <div className="w-full rounded-xl h-1/2">
+        <div className="w-full rounded-xl h-[45%]">
           <Scanner onScan={handleScanResult} />
         </div>
       </div>
