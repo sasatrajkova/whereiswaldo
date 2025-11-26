@@ -13,15 +13,19 @@ import {
 export const myIdKey = 'whereIsWaldoId';
 export const myNameKey = 'whereIsWaldoName';
 
+export type Rarity = 'rare' | 'common' | 'uncommon';
+
 export class User {
-  constructor(id: string, name: string, image?: string) {
+  constructor(id: string, name: string, image?: string, rarity?: Rarity) {
     this.id = id;
     this.name = name;
     this.imageBase64 = image;
+    this.rarity = rarity;
   }
   readonly id: string;
   readonly name: string;
   readonly imageBase64?: string;
+  readonly rarity?: Rarity;
 }
 
 export class Answer {
@@ -124,6 +128,26 @@ export async function getFoundUsers(): Promise<User[]> {
   );
 }
 
+export async function getWaldoRarity(userId: string): Promise<Rarity> {
+  const db = getDatabase();
+  const answersRef = ref(db, 'answers');
+  const answersSnapshot = await get(
+    query(answersRef, orderByChild('to'), equalTo(userId))
+  );
+  let answerCount = 0;
+  answersSnapshot.forEach(() => {
+    answerCount++;
+  });
+
+  if (answerCount === 0) {
+    return 'rare';
+  } else if (answerCount === 1) {
+    return 'common';
+  } else {
+    return 'uncommon';
+  }
+}
+
 export async function getAvailableWaldos(): Promise<User[]> {
   const me = localStorage.getItem(myIdKey);
   if (!me) {
@@ -148,9 +172,19 @@ export async function getAvailableWaldos(): Promise<User[]> {
       users.push(user.val());
     });
   }
-  return users.filter(
+  const availableUsers = users.filter(
     (user) => !userIds.includes(user.id) && !!user.imageBase64
   );
+
+  // Fetch rarity for each user
+  const usersWithRarity = await Promise.all(
+    availableUsers.map(async (user) => {
+      const rarity = await getWaldoRarity(user.id);
+      return new User(user.id, user.name, user.imageBase64, rarity);
+    })
+  );
+
+  return usersWithRarity;
 }
 
 export async function submitAnswer(to: string, answers: string[]) {

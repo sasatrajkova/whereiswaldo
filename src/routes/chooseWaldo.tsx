@@ -1,4 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { getAvailableWaldos, User } from '@/database/database';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
@@ -11,14 +17,52 @@ type WaldoProfileComponentProps = {
   profile: User;
 };
 
+function getRarityTextColor(rarity?: string): string {
+  switch (rarity) {
+    case 'rare':
+      return 'text-accent';
+    case 'common':
+      return 'text-gray-400';
+    case 'uncommon':
+      return 'text-secondary';
+    default:
+      return '';
+  }
+}
+
+function getRarityOutline(rarity?: string): string {
+  switch (rarity) {
+    case 'rare':
+      return 'ring ring-4 ring-accent';
+    case 'common':
+      return 'outline outline-2 outline-gray-600';
+    case 'uncommon':
+      return 'outline outline-2 outline-secondary';
+    default:
+      return '';
+  }
+}
+
 function WaldoProfileComponent({ profile }: WaldoProfileComponentProps) {
   return (
     <Link to="/findWaldo" search={{ id: profile.id }}>
-      <Card className="w-full cursor-pointer">
+      <Card
+        className={`w-full cursor-pointer ${getRarityOutline(profile.rarity)}`}
+      >
         <CardHeader>
-          <CardTitle className="overflow-hidden text-ellipsis h-8">
-            {profile.name}
+          <CardTitle className="overflow-hidden text-ellipsis h-12 flex flex-col">
+            <span className="overflow-hidden text-ellipsis">
+              {profile.name}
+            </span>
+            {profile.rarity && (
+              <span
+                className={`text-sm font-semibold capitalize ${getRarityTextColor(profile.rarity)}`}
+              >
+                {profile.rarity}
+              </span>
+            )}
           </CardTitle>
+          <CardDescription></CardDescription>
         </CardHeader>
         <CardContent>
           <img src={profile.imageBase64} className="w-24 h-24 object-cover" />
@@ -28,18 +72,36 @@ function WaldoProfileComponent({ profile }: WaldoProfileComponentProps) {
   );
 }
 
+function sortByRarestFirst(rarity?: string): number {
+  switch (rarity) {
+    case 'rare':
+      return 0;
+    case 'uncommon':
+      return 1;
+    case 'common':
+      return 2;
+    default:
+      return 3;
+  }
+}
+
 function RouteComponent() {
   const [waldos, setWaldos] = useState<User[]>([]);
 
   useEffect(() => {
-    getAvailableWaldos().then((waldos) => setWaldos(waldos));
+    getAvailableWaldos().then((waldos) => {
+      const sorted = [...waldos].sort(
+        (a, b) => sortByRarestFirst(a.rarity) - sortByRarestFirst(b.rarity)
+      );
+      setWaldos(sorted);
+    });
   }, []);
 
   return (
     <>
       <h1>Choose your next Waldo</h1>
       {waldos.length > 0 && (
-        <div className="w-full grid gap-4 grid-cols-[repeat(auto-fit,minmax(120px,1fr))] overflow-auto">
+        <div className="w-full grid gap-4 grid-cols-[repeat(auto-fit,minmax(120px,1fr))] overflow-auto p-1">
           {waldos.map((waldo) => (
             <WaldoProfileComponent
               profile={waldo}
