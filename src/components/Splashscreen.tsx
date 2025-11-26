@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { Button } from './ui/button';
 import { getMe, User } from '@/database/database';
 import { useEffect, useState } from 'react';
+import CurvedLoop from './CurvedLoop';
 
 export default function SplashScreen() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -21,30 +22,42 @@ export default function SplashScreen() {
   }
 
   return (
-    <>
+    <div className="relative h-full w-full overflow-hidden">
       {user?.imageBase64 && (
-        <>
-          <h1>{'Welcome back ' + user.name + '!'}</h1>
+        <div className="h-full flex flex-col justify-between">
+          <h1 className="pt-3">{'Welcome back ' + user.name + '!'}</h1>
           <img
-            className="w-60 h-60 object-cover rounded-xl mb-8"
+            className="w-60 h-60 object-cover rounded-xl mb-8 self-center"
             src={user.imageBase64}
           />
-          <Link to="/chooseWaldo" className="w-full">
-            <Button className="w-full">Continue the adventure</Button>
+          <div className="absolute top-40 h-full w-full">
+            <CurvedLoop
+              marqueeText="*jungle jungle * where's waldo?*"
+              curveAmount={800}
+              interactive={false}
+            />
+          </div>
+          <Link to="/chooseWaldo" className="w-full z-10">
+            <Button className="w-full mb-3">Continue the adventure</Button>
           </Link>
-        </>
+        </div>
       )}
       {!user?.imageBase64 && (
-        <>
-          <h1>{"Where's Waldo?"}</h1>
-          <Link to="/createAvatar" className="w-full">
+        <div className="h-full flex flex-col justify-between">
+          <h1 className="pt-3">{"Where's Waldo?"}</h1>
+          <div className="absolute -top-40 h-full w-full">
+            <CurvedLoop
+              marqueeText="**** collect * all * the * waldo's! ****"
+              curveAmount={300}
+              interactive={false}
+            />
+          </div>
+          <Link to="/createAvatar" className="w-full z-10">
             <Button className="w-full">Start the adventure</Button>
           </Link>
-          <p className="text-lg sm:text-xl text-muted-foreground mb-12 max-w-md mx-auto leading-relaxed">
-            {'Embark on a jungle adventure and find Waldo hidden in the wild!'}
-          </p>
-        </>
+          <div></div>
+        </div>
       )}
-    </>
+    </div>
   );
 }
