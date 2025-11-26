@@ -38,7 +38,7 @@ function RouteComponent() {
 
   return (
     <>
-      <Confetti />
+      <Confetti className='w-full h-4/7' />
       <form
         onSubmit={(e) => handleFormSubmit(e)}
         className="flex flex-col gap-3 w-full px-8"
