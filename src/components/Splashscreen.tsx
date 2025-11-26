@@ -16,7 +16,7 @@ export default function SplashScreen() {
     <>
       {user && (
         <>
-          <h1>{'Welcome back' + user.name + '!'}</h1>
+          <h1>{'Welcome back ' + user.name + '!'}</h1>
           <img className="w-60 rounded-xl" src={user.imageBase64} />
           <Link to="/chooseWaldo">
             <Button>Continue the adventure</Button>
