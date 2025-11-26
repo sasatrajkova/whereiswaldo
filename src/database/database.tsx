@@ -123,8 +123,17 @@ export async function getFoundUsers(): Promise<User[]> {
       users.push(user.val());
     });
   }
-  return users.filter(
+
+  const filteredUsers = users.filter(
     (user) => userIds.includes(user.id) && !!user.imageBase64
+  );
+
+  // Fetch rarity for each user
+  return await Promise.all(
+    filteredUsers.map(async (user) => {
+      const rarity = await getWaldoRarity(user.id);
+      return new User(user.id, user.name, user.imageBase64, rarity);
+    })
   );
 }
 
@@ -139,9 +148,9 @@ export async function getWaldoRarity(userId: string): Promise<Rarity> {
     answerCount++;
   });
 
-  if (answerCount === 0) {
+  if (answerCount <= 1) {
     return 'rare';
-  } else if (answerCount === 1) {
+  } else if (answerCount === 2) {
     return 'common';
   } else {
     return 'uncommon';
