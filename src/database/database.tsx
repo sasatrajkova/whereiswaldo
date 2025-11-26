@@ -122,6 +122,33 @@ export async function getFoundUsers(): Promise<User[]> {
   return users.filter((user) => userIds.includes(user.id));
 }
 
+export async function getAvailableWaldos(): Promise<User[]> {
+  const me = localStorage.getItem(myIdKey);
+  if (!me) {
+    console.error('Cant find myself');
+    return [];
+  }
+  const db = getDatabase();
+  const answersRef = ref(db, 'answers');
+  const answersSnapshot = await get(
+    query(answersRef, orderByChild('from'), equalTo(me))
+  );
+  const userIds: string[] = [];
+  answersSnapshot.forEach((ans) => {
+    const answer = ans.val() as Answer;
+    userIds.push(answer.to);
+  });
+  const usersRef = ref(db, 'users');
+  const usersSnapshot = await get(usersRef);
+  const users: User[] = [];
+  if (usersSnapshot.exists()) {
+    usersSnapshot.forEach((user) => {
+      users.push(user.val());
+    });
+  }
+  return users.filter((user) => !userIds.includes(user.id));
+}
+
 export async function submitAnswer(to: string, answers: string[]) {
   const me = localStorage.getItem(myIdKey);
   if (!me) {

@@ -1,17 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getUsers, User } from '@/database/database';
+import { getAvailableWaldos, User } from '@/database/database';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 export const Route = createFileRoute('/chooseWaldo')({
   component: RouteComponent,
 });
-
-// type WaldoProfile = {
-//   image: string;
-//   title: string;
-//   id: string;
-// };
 
 type WaldoProfileComponentProps = {
   profile: User;
@@ -25,7 +19,7 @@ function WaldoProfileComponent({ profile }: WaldoProfileComponentProps) {
           <CardTitle>{profile.name}</CardTitle>
         </CardHeader>
         <CardContent>
-          <img src={profile.imageBase64} />
+          <img src={profile.imageBase64} className="w-24 h-24 object-cover" />
         </CardContent>
       </Card>
     </Link>
@@ -36,20 +30,27 @@ function RouteComponent() {
   const [waldos, setWaldos] = useState<User[]>([]);
 
   useEffect(() => {
-    getUsers().then((waldos) => setWaldos(waldos));
+    getAvailableWaldos().then((waldos) => setWaldos(waldos));
   }, []);
 
   return (
     <>
       <h1>Choose your next Waldo</h1>
-      <div className="grid grid-cols-3 gap-2">
-        {waldos.map((waldo) => (
-          <WaldoProfileComponent
-            profile={waldo}
-            key={waldo.id}
-          ></WaldoProfileComponent>
-        ))}
-      </div>
+      {waldos.length > 0 && (
+        <div className="grid grid-cols-3 gap-2 overflow-auto">
+          {waldos.map((waldo) => (
+            <WaldoProfileComponent
+              profile={waldo}
+              key={waldo.id}
+            ></WaldoProfileComponent>
+          ))}
+        </div>
+      )}
+      {waldos.length === 0 && (
+        <div className="flex justify-center align-center">
+          <small className="font-mono">No waldos available :(</small>
+        </div>
+      )}
     </>
   );
 }
