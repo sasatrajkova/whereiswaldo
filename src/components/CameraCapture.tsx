@@ -7,11 +7,11 @@ import { Button } from '@/components/ui/button';
 
 interface CameraCaptureProps {
   onCapture: (blob: Blob) => void;
-  overlayType: 'waldo' | 'santa' | 'pizza';
+  overlayType: string;
 }
 
-const getOverlay = (type: 'waldo' | 'santa' | 'pizza') => {
-  switch (type) {
+const getOverlay = (overlayType: string) => {
+  switch (overlayType) {
     case 'santa':
       return SantaOverlay;
     case 'pizza':
