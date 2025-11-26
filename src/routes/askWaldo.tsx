@@ -5,6 +5,7 @@ import questions from '../database/questions.json';
 import { useState, useEffect, type FormEvent } from 'react';
 import { submitAnswer } from '@/database/database';
 import { getUser, type User } from '@/database/database';
+import Confetti from 'react-confetti';
 
 export const Route = createFileRoute('/askWaldo')({
   component: RouteComponent,
@@ -37,6 +38,7 @@ function RouteComponent() {
 
   return (
     <>
+      <Confetti />
       <form
         onSubmit={(e) => handleFormSubmit(e)}
         className="flex flex-col gap-3 w-full px-8"
