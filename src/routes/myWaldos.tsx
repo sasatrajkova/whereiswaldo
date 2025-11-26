@@ -19,7 +19,7 @@ function MyWaldoProfileComponent({ profile }: MyWaldoProfileComponentProps) {
         <CardTitle>{profile.name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <img src={profile.imageBase64} />
+        <img src={profile.imageBase64} className="w-24 h-24 object-cover" />
       </CardContent>
     </Card>
   );
@@ -33,7 +33,7 @@ function RouteComponent() {
   }, []);
 
   return (
-    <>
+    <div className="w-full flex flex-col gap-4">
       <h1>My waldos</h1>
       {waldos.length === 0 && (
         <small className="font-mono">
@@ -41,17 +41,21 @@ function RouteComponent() {
         </small>
       )}
       {waldos.length > 0 && <h2>You already found {waldos.length} waldos!</h2>}
-      <div className="grid grid-cols-3 gap-2 p-4">
+      <div className="w-full grid gap-4 grid-cols-[repeat(auto-fit,minmax(120px,1fr))] overflow-auto">
         {waldos.map((waldo) => (
-          <Link to={"/exploreWaldo"} search={{ id: waldo.id }}><MyWaldoProfileComponent
-            profile={waldo}
-            key={waldo.id}
-          ></MyWaldoProfileComponent></Link>
+          <Link to={'/exploreWaldo'} search={{ id: waldo.id }}>
+            <MyWaldoProfileComponent
+              profile={waldo}
+              key={waldo.id}
+            ></MyWaldoProfileComponent>
+          </Link>
         ))}
       </div>
       <Link to="/chooseWaldo">
-        <Button className="w-100">Find the next Waldo</Button>
+        <Button variant="secondary" className="w-full">
+          Find the next Waldo
+        </Button>
       </Link>
-    </>
+    </div>
   );
 }

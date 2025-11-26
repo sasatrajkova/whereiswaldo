@@ -38,10 +38,10 @@ function RouteComponent() {
 
   return (
     <>
-      <Confetti className='w-full h-4/7' />
+      <Confetti className="w-full h-4/7" />
       <form
         onSubmit={(e) => handleFormSubmit(e)}
-        className="flex flex-col gap-3 w-full px-8"
+        className="flex flex-col gap-3 w-full"
       >
         <img src={user?.imageBase64} className="object-cover" />
         <h1>{question}</h1>

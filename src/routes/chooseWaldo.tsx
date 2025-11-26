@@ -16,7 +16,7 @@ function WaldoProfileComponent({ profile }: WaldoProfileComponentProps) {
     <Link to="/findWaldo" search={{ id: profile.id }}>
       <Card className="w-full cursor-pointer">
         <CardHeader>
-          <CardTitle className="overflow-hidden text-ellipsis">
+          <CardTitle className="overflow-hidden text-ellipsis h-8">
             {profile.name}
           </CardTitle>
         </CardHeader>
@@ -39,7 +39,7 @@ function RouteComponent() {
     <>
       <h1>Choose your next Waldo</h1>
       {waldos.length > 0 && (
-        <div className="grid grid-cols-3 gap-2 overflow-auto">
+        <div className="w-full grid gap-4 grid-cols-[repeat(auto-fit,minmax(120px,1fr))] overflow-auto">
           {waldos.map((waldo) => (
             <WaldoProfileComponent
               profile={waldo}
