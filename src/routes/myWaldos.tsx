@@ -19,7 +19,7 @@ function MyWaldoProfileComponent({ profile }: MyWaldoProfileComponentProps) {
         <CardTitle>{profile.name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <img src={profile.imageBase64} className="w-24 h-24 object-cover" />
+        <img src={profile.imageBase64} className="w-30 h-30 object-cover justify-self-center" />
       </CardContent>
     </Card>
   );

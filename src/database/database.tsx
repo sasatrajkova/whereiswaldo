@@ -173,7 +173,7 @@ export async function getAvailableWaldos(): Promise<User[]> {
     });
   }
   const availableUsers = users.filter(
-    (user) => !userIds.includes(user.id) && !!user.imageBase64
+    (user) => user.id !== me && userIds.includes(user.id) && !!user.imageBase64
   );
 
   // Fetch rarity for each user
