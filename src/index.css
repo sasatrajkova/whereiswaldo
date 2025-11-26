@@ -151,3 +151,29 @@ h1 {
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes zoomIn {
+  0% {
+    transform: scale(0.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-zoom-in {
+  animation: zoomIn 1s cubic-bezier(1, 0.01, 0, 0.99);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-in-out;
+}
