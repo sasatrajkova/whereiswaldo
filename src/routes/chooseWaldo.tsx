@@ -76,23 +76,25 @@ function RouteComponent() {
   }, []);
 
   return (
-    <div className="p-2">
+    <div className="p-2 h-full flex flex-col">
       <h1>Choose your next Waldo</h1>
-      {waldos.length > 0 && (
-        <div className="w-full grid gap-4 grid-cols-[repeat(auto-fit,minmax(120px,1fr))] overflow-auto p-1">
-          {waldos.map((waldo) => (
-            <WaldoProfileComponent
-              profile={waldo}
-              key={waldo.id}
-            ></WaldoProfileComponent>
-          ))}
-        </div>
-      )}
-      {waldos.length === 0 && (
-        <div className="flex justify-center align-center">
-          <small className="font-mono">No waldos available :(</small>
-        </div>
-      )}
+      <div className="overflow-auto">
+        {waldos.length > 0 && (
+          <div className="w-full grid gap-4 grid-cols-[repeat(auto-fit,minmax(120px,1fr))] overflow-auto p-1">
+            {waldos.map((waldo) => (
+              <WaldoProfileComponent
+                profile={waldo}
+                key={waldo.id}
+              ></WaldoProfileComponent>
+            ))}
+          </div>
+        )}
+        {waldos.length === 0 && (
+          <div className="flex justify-center align-center">
+            <small className="font-mono">No waldos available :(</small>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
