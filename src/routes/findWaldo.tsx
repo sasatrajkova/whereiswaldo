@@ -28,20 +28,18 @@ function FindWaldoComponent({ profile }: FindWaldoComponentProps) {
   }
 
   return (
-    <>
-      <h1 className="mt-10 text-center">Find Waldo!</h1>
-      <div className="h-dvh w-full flex flex-col pb-30">
-        <div className="w-full flex-1 flex h-[50%]">
-          <img
-            src={profile.imageBase64}
-            className="object-cover flex-1 rounded-t-xl"
-          />
-        </div>
-        <div className="w-full flex-1 flex h-[50%] rounded-xl">
+    <div className="flex flex-col box-border h-full">
+      <h1 className="text-center">Find Waldo!</h1>
+      <div className="w-full flex flex-col h-full">
+        <img
+          src={profile.imageBase64}
+          className="object-cover rounded-t-xl h-1/2"
+        />
+        <div className="w-full rounded-xl h-1/2">
           <Scanner onScan={handleScanResult} />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -62,7 +60,7 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="h-dvh w-full flex flex-col">
+      <div className="w-full flex flex-col h-full">
         <FindWaldoComponent profile={user} />
 
         {isDev && (

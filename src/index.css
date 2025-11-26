@@ -70,6 +70,7 @@ h1 {
   @apply text-3xl;
   @apply font-bold;
   @apply pb-8;
+  @apply text-center;
 }
 
 @theme inline {
