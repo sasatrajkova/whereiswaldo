@@ -16,7 +16,9 @@ function WaldoProfileComponent({ profile }: WaldoProfileComponentProps) {
     <Link to="/findWaldo" search={{ id: profile.id }}>
       <Card className="w-full cursor-pointer">
         <CardHeader>
-          <CardTitle>{profile.name}</CardTitle>
+          <CardTitle className="overflow-hidden text-ellipsis">
+            {profile.name}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <img src={profile.imageBase64} className="w-24 h-24 object-cover" />
