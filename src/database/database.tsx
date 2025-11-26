@@ -73,7 +73,7 @@ export async function getUsers(): Promise<User[]> {
       users.push(snap.val());
     });
   }
-  return users.filter((user) => user.id !== myId);
+  return users.filter((user) => user.id !== myId && !!user.imageBase64);
 }
 
 export async function createUser(
@@ -119,7 +119,9 @@ export async function getFoundUsers(): Promise<User[]> {
       users.push(user.val());
     });
   }
-  return users.filter((user) => userIds.includes(user.id));
+  return users.filter(
+    (user) => userIds.includes(user.id) && !!user.imageBase64
+  );
 }
 
 export async function getAvailableWaldos(): Promise<User[]> {
@@ -146,7 +148,9 @@ export async function getAvailableWaldos(): Promise<User[]> {
       users.push(user.val());
     });
   }
-  return users.filter((user) => !userIds.includes(user.id));
+  return users.filter(
+    (user) => !userIds.includes(user.id) && !!user.imageBase64
+  );
 }
 
 export async function submitAnswer(to: string, answers: string[]) {
