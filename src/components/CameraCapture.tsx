@@ -10,7 +10,7 @@ interface CameraCaptureProps {
 }
 
 const getOverlay = (type: 'waldo' | 'santa') =>
-  type === 'waldo' ? WaldoOverlay : SantaOverlay;
+  type === 'santa' ? SantaOverlay : WaldoOverlay;
 
 const calculateOverlayCrop = (
   overlayImg: HTMLImageElement,
