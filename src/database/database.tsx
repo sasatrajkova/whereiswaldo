@@ -149,7 +149,7 @@ export async function getAvailableWaldos(): Promise<User[]> {
     });
   }
   return users.filter(
-    (user) => !userIds.includes(user.id) && !!user.imageBase64
+    (user) => user.id !== me && !userIds.includes(user.id) && !!user.imageBase64
   );
 }
 
