@@ -1,13 +1,19 @@
 import { useRef, useCallback, useState } from 'react';
 import Webcam from 'react-webcam';
 import WaldoOverlay from '@/assets/WaldoOverlay.png';
+import SantaOverlay from '@/assets/SantaOverlay.webp';
 
 interface CameraCaptureProps {
   onCapture: (blob: Blob) => void;
   onClose: () => void;
+  overlayType: 'waldo' | 'santa';
 }
 
-export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
+export function CameraCapture({
+  onCapture,
+  onClose,
+  overlayType,
+}: CameraCaptureProps) {
   const webcamRef = useRef<Webcam>(null);
   const overlayRef = useRef<HTMLImageElement>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
@@ -89,14 +95,14 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
             />
             <img
               ref={overlayRef}
-              src={WaldoOverlay}
+              src={overlayType === 'waldo' ? WaldoOverlay : SantaOverlay}
               alt="Waldo Overlay"
               className="absolute inset-0 w-full h-full pointer-events-none object-cover"
               style={{ display: 'none' }}
             />
             {isCameraReady && (
               <img
-                src={WaldoOverlay}
+                src={overlayType === 'waldo' ? WaldoOverlay : SantaOverlay}
                 alt="Waldo Overlay Preview"
                 className="absolute inset-0 w-full h-full pointer-events-none object-cover"
               />

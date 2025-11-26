@@ -24,8 +24,8 @@ export default function MyWaldoComponent() {
   return (
     <Sheet>
       <SheetTrigger asChild disabled={!user}>
-        <Button variant="secondary" className="shadow-lg">
-          <QrCodeIcon />
+        <Button variant="default" className="shadow-lg" size="icon-lg">
+          <QrCodeIcon className="scale-175" />
         </Button>
       </SheetTrigger>
       <SheetContent side="bottom" className="w-[80%] mx-auto rounded-t-xl">
@@ -43,6 +43,7 @@ export default function MyWaldoComponent() {
                 value={user.id}
                 className="w-full"
                 bgColor="transparent"
+                fgColor="#007e6e"
               />
             </div>
           </>
