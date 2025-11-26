@@ -17,8 +17,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
@@ -190,14 +188,12 @@ function RouteComponent() {
             <DropdownMenuCheckboxItem
               checked={chooseOverlay === 'waldo'}
               onCheckedChange={() => setChooseOverlay('waldo')}
-              disable
             >
               Waldo
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={chooseOverlay === 'santa'}
               onCheckedChange={() => setChooseOverlay('santa')}
-              disable
             >
               Santa
             </DropdownMenuCheckboxItem>
