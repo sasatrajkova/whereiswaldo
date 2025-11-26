@@ -146,7 +146,7 @@ export async function getAvailableWaldos(): Promise<User[]> {
       users.push(user.val());
     });
   }
-  return users.filter((user) => !userIds.includes(user.id));
+  return users.filter((user) => user.imageBase64 && !userIds.includes(user.id));
 }
 
 export async function submitAnswer(to: string, answers: string[]) {
