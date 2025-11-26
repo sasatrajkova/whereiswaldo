@@ -6,7 +6,7 @@ import SantaOverlay from '@/assets/SantaOverlay.webp';
 interface CameraCaptureProps {
   onCapture: (blob: Blob) => void;
   onClose: () => void;
-  overlayType: 'waldo' | 'santa';
+  overlayType: string;
 }
 
 export function CameraCapture({
