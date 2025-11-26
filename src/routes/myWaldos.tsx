@@ -34,8 +34,13 @@ function RouteComponent() {
 
   return (
     <>
-      <h1>My waldos!</h1>
-      <h2>You already found {waldos.length} waldos!</h2>
+      <h1>My waldos</h1>
+      {waldos.length === 0 && (
+        <small className="font-mono">
+          You have not found any waldos yet :(
+        </small>
+      )}
+      {waldos.length > 0 && <h2>You already found {waldos.length} waldos!</h2>}
       <div className="grid grid-cols-3 gap-2 p-4">
         {waldos.map((waldo) => (
           <MyWaldoProfileComponent
