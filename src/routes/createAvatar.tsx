@@ -13,6 +13,14 @@ import { CameraCapture } from '@/components/CameraCapture';
 import WaldoBackground from '@/assets/WaldoBackground.webp';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export const Route = createFileRoute('/createAvatar')({
   component: RouteComponent,
@@ -29,6 +37,7 @@ function RouteComponent() {
   const [isUserCreated, setIsUserCreated] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
   const [showCamera, setShowCamera] = useState<boolean>(false);
+  const [chooseOverlay, setChooseOverlay] = useState<string>('');
 
   const modelRef = useRef<PreTrainedModel>(null);
   const processorRef = useRef<Processor>(null);
@@ -173,6 +182,27 @@ function RouteComponent() {
             />
           </div>
         )}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">Choose filter</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuCheckboxItem
+              checked={chooseOverlay === 'waldo'}
+              onCheckedChange={() => setChooseOverlay('waldo')}
+              disable
+            >
+              Waldo
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={chooseOverlay === 'santa'}
+              onCheckedChange={() => setChooseOverlay('santa')}
+              disable
+            >
+              Santa
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Button
           variant="outline"
           onClick={() => setShowCamera(true)}
@@ -198,6 +228,7 @@ function RouteComponent() {
         <CameraCapture
           onCapture={(c) => handleCameraCapture(c)}
           onClose={() => setShowCamera(false)}
+          overlayType={chooseOverlay}
         />
       )}
     </>

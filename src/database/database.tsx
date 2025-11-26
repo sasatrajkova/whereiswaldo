@@ -166,6 +166,24 @@ export async function submitAnswer(to: string, answers: string[]) {
   return newId;
 }
 
+export async function getAnswersForUser(userId: string) {
+  const db = getDatabase();
+  const answersRef = ref(db, 'answers');
+  const answersSnapshot = await get(
+    query(answersRef, orderByChild('to'), equalTo(userId))
+  );
+  const words: Record<string, number> = {};
+  answersSnapshot.forEach((ans) => {
+    const answer = ans.val() as Answer;
+    if(words[answer.answers[0]]) {
+        words[answer.answers[0]] += 100;
+    } else {
+        words[answer.answers[0]] = 100;
+    }
+  });
+  return Object.entries(words).map((word) => ({ text: word[0], value: word[1] }))
+}
+
 export function setupFirebase() {
   const firebaseConfig = {
     apiKey: 'AIzaSyAjDP0XEoaOY0DhAPIdsIeotMwNCOuYWDE',
