@@ -109,7 +109,7 @@ export function CameraCapture({ onCapture, overlayType }: CameraCaptureProps) {
 
   return (
     <>
-      <div className="relative w-full max-w-xl aspect-video bg-black rounded-md overflow-hidden">
+      <div className="relative w-full max-w-xl aspect-3/4 bg-black rounded-md overflow-hidden">
         <Webcam
           ref={webcamRef}
           screenshotFormat="image/png"
