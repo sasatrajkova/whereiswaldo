@@ -30,7 +30,39 @@ export function CameraCapture({
     canvas: HTMLCanvasElement
   ) => {
     if (overlayRef.current) {
-      ctx.drawImage(overlayRef.current, 0, 0, canvas.width, canvas.height);
+      const overlay = overlayRef.current;
+
+      const overlayAspect = overlay.naturalWidth / overlay.naturalHeight;
+      const canvasAspect = canvas.width / canvas.height;
+
+      let srcX = 0,
+        srcY = 0,
+        srcWidth = overlay.naturalWidth,
+        srcHeight = overlay.naturalHeight;
+
+      if (overlayAspect > canvasAspect) {
+        // Overlay is wider → crop horizontally
+        const newWidth = overlay.naturalHeight * canvasAspect;
+        srcX = (overlay.naturalWidth - newWidth) / 2;
+        srcWidth = newWidth;
+      } else {
+        // Overlay is taller → crop vertically
+        const newHeight = overlay.naturalWidth / canvasAspect;
+        srcY = (overlay.naturalHeight - newHeight) / 2;
+        srcHeight = newHeight;
+      }
+
+      ctx.drawImage(
+        overlay,
+        srcX,
+        srcY,
+        srcWidth,
+        srcHeight,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
     }
   };
 
