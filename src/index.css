@@ -145,3 +145,11 @@ h1 {
 .animate-fade-in {
   animation: fadeIn 1s ease-in-out;
 }
+
+.curved-loop-jacket {
+  min-height: 100% !important;
+}
+
+.curved-loop-svg {
+  fill: #bf124d !important;
+}
