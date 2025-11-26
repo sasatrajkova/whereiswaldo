@@ -73,7 +73,7 @@ export async function getUsers(): Promise<User[]> {
       users.push(snap.val());
     });
   }
-  return users.filter((user) => user.id !== myId);
+  return users.filter((user) => user.id !== myId && !!user.imageBase64);
 }
 
 export async function createUser(
@@ -90,7 +90,7 @@ export async function createUser(
   await set(ref(db, 'users/' + (existingId ?? newId)), {
     id: existingId ?? newId,
     name: name,
-    imageBase64: image,
+    imageBase64: image ?? '',
   });
   return newId;
 }
@@ -119,7 +119,9 @@ export async function getFoundUsers(): Promise<User[]> {
       users.push(user.val());
     });
   }
-  return users.filter((user) => userIds.includes(user.id));
+  return users.filter(
+    (user) => userIds.includes(user.id) && !!user.imageBase64
+  );
 }
 
 export async function getAvailableWaldos(): Promise<User[]> {
@@ -146,7 +148,9 @@ export async function getAvailableWaldos(): Promise<User[]> {
       users.push(user.val());
     });
   }
-  return users.filter((user) => !userIds.includes(user.id));
+  return users.filter(
+    (user) => !userIds.includes(user.id) && !!user.imageBase64
+  );
 }
 
 export async function submitAnswer(to: string, answers: string[]) {
@@ -175,13 +179,16 @@ export async function getAnswersForUser(userId: string) {
   const words: Record<string, number> = {};
   answersSnapshot.forEach((ans) => {
     const answer = ans.val() as Answer;
-    if(words[answer.answers[0]]) {
-        words[answer.answers[0]] += 100;
+    if (words[answer.answers[0]]) {
+      words[answer.answers[0]] += 100;
     } else {
-        words[answer.answers[0]] = 100;
+      words[answer.answers[0]] = 100;
     }
   });
-  return Object.entries(words).map((word) => ({ text: word[0], value: word[1] }))
+  return Object.entries(words).map((word) => ({
+    text: word[0],
+    value: word[1],
+  }));
 }
 
 export function setupFirebase() {
@@ -199,4 +206,3 @@ export function setupFirebase() {
   // Initialize Firebase
   return initializeApp(firebaseConfig);
 }
-

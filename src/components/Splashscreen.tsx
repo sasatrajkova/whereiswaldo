@@ -22,7 +22,7 @@ export default function SplashScreen() {
 
   return (
     <>
-      {user && (
+      {user?.imageBase64 && (
         <>
           <h1>{'Welcome back ' + user.name + '!'}</h1>
           <img
@@ -34,7 +34,7 @@ export default function SplashScreen() {
           </Link>
         </>
       )}
-      {!user && (
+      {!user?.imageBase64 && (
         <>
           <h1>{"Where's Waldo?"}</h1>
           <Link to="/createAvatar" className="w-full">
