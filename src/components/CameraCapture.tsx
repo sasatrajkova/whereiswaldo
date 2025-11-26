@@ -1,8 +1,8 @@
 import { useRef, useCallback, useState } from 'react';
 import Webcam from 'react-webcam';
-import WaldoOverlay from '@/assets/WaldoOverlay.png';
+import WaldoOverlay from '@/assets/WaldoOverlay.webp';
 import SantaOverlay from '@/assets/SantaOverlay.webp';
-import PizzaOverlay from '@/assets/PizzaOverlay.png';
+import PizzaOverlay from '@/assets/PizzaOverlay.webp';
 import { Button } from '@/components/ui/button';
 
 interface CameraCaptureProps {
