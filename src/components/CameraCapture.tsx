@@ -1,162 +1,135 @@
 import { useRef, useCallback, useState } from 'react';
 import Webcam from 'react-webcam';
-import WaldoOverlay from '@/assets/WaldoOverlay.png';
+import WaldoOverlay from '@/assets/WaldoOverlay.webp';
 import SantaOverlay from '@/assets/SantaOverlay.webp';
+import PizzaOverlay from '@/assets/PizzaOverlay.webp';
+import { Button } from '@/components/ui/button';
 
 interface CameraCaptureProps {
   onCapture: (blob: Blob) => void;
-  onClose: () => void;
   overlayType: string;
 }
 
-export function CameraCapture({
-  onCapture,
-  onClose,
-  overlayType,
-}: CameraCaptureProps) {
+const getOverlay = (overlayType: string) => {
+  switch (overlayType) {
+    case 'santa':
+      return SantaOverlay;
+    case 'pizza':
+      return PizzaOverlay;
+    case 'waldo':
+    default:
+      return WaldoOverlay;
+  }
+};
+
+const calculateOverlayCrop = (
+  overlayImg: HTMLImageElement,
+  canvas: HTMLCanvasElement
+) => {
+  const overlayAspect = overlayImg.naturalWidth / overlayImg.naturalHeight;
+  const canvasAspect = canvas.width / canvas.height;
+
+  let srcX = 0,
+    srcY = 0,
+    srcWidth = overlayImg.naturalWidth,
+    srcHeight = overlayImg.naturalHeight;
+
+  if (overlayAspect > canvasAspect) {
+    const newWidth = overlayImg.naturalHeight * canvasAspect;
+    srcX = (overlayImg.naturalWidth - newWidth) / 2;
+    srcWidth = newWidth;
+  } else {
+    const newHeight = overlayImg.naturalWidth / canvasAspect;
+    srcY = (overlayImg.naturalHeight - newHeight) / 2;
+    srcHeight = newHeight;
+  }
+
+  return { srcX, srcY, srcWidth, srcHeight };
+};
+
+const drawImageWithOverlay = (
+  ctx: CanvasRenderingContext2D,
+  baseImg: HTMLImageElement,
+  overlayImg: HTMLImageElement,
+  canvas: HTMLCanvasElement
+) => {
+  ctx.drawImage(baseImg, 0, 0);
+
+  const { srcX, srcY, srcWidth, srcHeight } = calculateOverlayCrop(
+    overlayImg,
+    canvas
+  );
+
+  ctx.drawImage(
+    overlayImg,
+    srcX,
+    srcY,
+    srcWidth,
+    srcHeight,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+};
+
+export function CameraCapture({ onCapture, overlayType }: CameraCaptureProps) {
   const webcamRef = useRef<Webcam>(null);
-  const overlayRef = useRef<HTMLImageElement>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
-
-  const drawScreenshot = (
-    ctx: CanvasRenderingContext2D,
-    img: HTMLImageElement
-  ) => {
-    ctx.drawImage(img, 0, 0);
-  };
-
-  const drawOverlay = (
-    ctx: CanvasRenderingContext2D,
-    canvas: HTMLCanvasElement
-  ) => {
-    if (overlayRef.current) {
-      const overlay = overlayRef.current;
-
-      const overlayAspect = overlay.naturalWidth / overlay.naturalHeight;
-      const canvasAspect = canvas.width / canvas.height;
-
-      let srcX = 0,
-        srcY = 0,
-        srcWidth = overlay.naturalWidth,
-        srcHeight = overlay.naturalHeight;
-
-      if (overlayAspect > canvasAspect) {
-        // Overlay is wider → crop horizontally
-        const newWidth = overlay.naturalHeight * canvasAspect;
-        srcX = (overlay.naturalWidth - newWidth) / 2;
-        srcWidth = newWidth;
-      } else {
-        // Overlay is taller → crop vertically
-        const newHeight = overlay.naturalWidth / canvasAspect;
-        srcY = (overlay.naturalHeight - newHeight) / 2;
-        srcHeight = newHeight;
-      }
-
-      ctx.drawImage(
-        overlay,
-        srcX,
-        srcY,
-        srcWidth,
-        srcHeight,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-    }
-  };
-
-  const convertCanvasToBlob = (
-    canvas: HTMLCanvasElement,
-    callback: (blob: Blob) => void
-  ) => {
-    canvas.toBlob((blob) => {
-      if (blob) {
-        callback(blob);
-      }
-    }, 'image/png');
-  };
-
-  const callOnCapture = (blob: Blob) => {
-    onCapture(blob);
-    onClose();
-  };
 
   const handleCapture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot();
-    if (imageSrc) {
-      // Create a canvas to composite the screenshot and overlay
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+    if (!imageSrc) return;
 
-      if (!ctx) return;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-      const img = new Image();
-      img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
+    const baseImg = new Image();
+    baseImg.src = imageSrc;
 
-        drawScreenshot(ctx, img);
-        drawOverlay(ctx, canvas);
-        convertCanvasToBlob(canvas, callOnCapture);
+    baseImg.onload = () => {
+      canvas.width = baseImg.width;
+      canvas.height = baseImg.height;
+
+      const overlayImg = new Image();
+      overlayImg.src = getOverlay(overlayType);
+
+      overlayImg.onload = () => {
+        drawImageWithOverlay(ctx, baseImg, overlayImg, canvas);
+
+        canvas.toBlob((blob) => {
+          if (blob) {
+            onCapture(blob);
+          }
+        }, 'image/png');
       };
-      img.src = imageSrc;
-    }
-  }, [onCapture, onClose]);
-
-  const handleUserMedia = () => {
-    setIsCameraReady(true);
-  };
+    };
+  }, [onCapture, overlayType]);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 rounded-lg shadow-2xl max-w-2xl w-full">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold text-white mb-4">Take a Photo</h2>
-
-          <div className="mb-4 bg-black rounded-md overflow-hidden relative">
-            <Webcam
-              ref={webcamRef}
-              screenshotFormat="image/png"
-              videoConstraints={{
-                facingMode: 'user',
-              }}
-              mirrored={true}
-              className="w-full"
-              onUserMedia={handleUserMedia}
-            />
-            <img
-              ref={overlayRef}
-              src={overlayType === 'waldo' ? WaldoOverlay : SantaOverlay}
-              alt="Waldo Overlay"
-              className="absolute inset-0 w-full h-full pointer-events-none object-cover"
-              style={{ display: 'none' }}
-            />
-            {isCameraReady && (
-              <img
-                src={overlayType === 'waldo' ? WaldoOverlay : SantaOverlay}
-                alt="Waldo Overlay Preview"
-                className="absolute inset-0 w-full h-full pointer-events-none object-cover"
-              />
-            )}
-          </div>
-
-          <div className="flex gap-4 justify-center">
-            <button
-              onClick={handleCapture}
-              className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 font-semibold"
-            >
-              📸 Capture
-            </button>
-            <button
-              onClick={onClose}
-              className="px-6 py-3 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors duration-200 font-semibold"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+    <>
+      <div className="relative w-full max-w-xl aspect-3/4 bg-black rounded-md overflow-hidden">
+        <Webcam
+          ref={webcamRef}
+          screenshotFormat="image/png"
+          videoConstraints={{ facingMode: 'user' }}
+          mirrored
+          className="absolute inset-0 w-full h-full object-cover"
+          onUserMedia={() => setIsCameraReady(true)}
+        />
+        {isCameraReady && (
+          <img
+            src={getOverlay(overlayType)}
+            alt="Overlay Preview"
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          />
+        )}
       </div>
-    </div>
+
+      <div className="flex gap-4 justify-center mt-4">
+        <Button onClick={handleCapture}>📸 Cheese</Button>
+      </div>
+    </>
   );
 }

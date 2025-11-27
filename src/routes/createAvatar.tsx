@@ -164,69 +164,83 @@ function RouteComponent() {
   return (
     <>
       <h1 className="text-4xl font-bold mb-2 text-center">Create your Waldo</h1>
-      <div className="flex flex-col items-center gap-4 mb-8">
-        <Input
-          className="bg-white text-black"
-          placeholder="Enter your name"
-          value={username}
-          onChange={(value) => setUsername(value.target.value)}
+
+      <div className="flex flex-col items-center gap-4 mb-2">
+        {!showCamera ? (
+          <Input
+            className="bg-white text-black"
+            placeholder="Enter your name"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">Choose filter</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              {['waldo', 'santa', 'pizza'].map((overlay) => (
+                <DropdownMenuCheckboxItem
+                  key={overlay}
+                  checked={chooseOverlay === overlay}
+                  onCheckedChange={() => setChooseOverlay(overlay)}
+                >
+                  {overlay.charAt(0).toUpperCase() + overlay.slice(1)}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
+
+      {showCamera ? (
+        <CameraCapture
+          onCapture={handleCameraCapture}
+          overlayType={chooseOverlay}
         />
-        {image && (
+      ) : (
+        image && (
           <div>
             <img
               src={processedImage || image}
-              alt={`A wonderful Waldo`}
+              alt="A wonderful Waldo"
               className="rounded-xl object-cover"
             />
           </div>
-        )}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">Choose filter</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuCheckboxItem
-              checked={chooseOverlay === 'waldo'}
-              onCheckedChange={() => setChooseOverlay('waldo')}
-            >
-              Waldo
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={chooseOverlay === 'santa'}
-              onCheckedChange={() => setChooseOverlay('santa')}
-            >
-              Santa
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <Button
-          variant="outline"
-          onClick={() => setShowCamera(true)}
-          disabled={isProcessing}
-        >
-          {image ? 'Retake Picture' : 'Take a picture'}
-        </Button>
-        {isUserCreated && (
-          <Link to="/chooseWaldo">
-            <Button>Continue</Button>
-          </Link>
-        )}
-        {!isUserCreated && (
+        )
+      )}
+
+      <div className="flex flex-col items-center gap-4 mb-8">
+        {!showCamera && (
           <Button
-            disabled={!username || !processedImage}
-            onClick={() => tryCreatingUserAndContinue()}
+            variant="outline"
+            onClick={() => {
+              if (image) {
+                setImage('');
+                setProcessedImage('');
+              }
+              setShowCamera(true);
+            }}
+            disabled={isProcessing}
           >
-            Create Waldo
+            {image ? 'Retake Picture' : 'Take a picture'}
           </Button>
         )}
+
+        {!showCamera &&
+          (isUserCreated ? (
+            <Link to="/chooseWaldo">
+              <Button>Continue</Button>
+            </Link>
+          ) : (
+            <Button
+              disabled={!username || !processedImage}
+              onClick={tryCreatingUserAndContinue}
+            >
+              Create Waldo
+            </Button>
+          ))}
       </div>
-      {showCamera && (
-        <CameraCapture
-          onCapture={(c) => handleCameraCapture(c)}
-          onClose={() => setShowCamera(false)}
-          overlayType={chooseOverlay}
-        />
-      )}
     </>
   );
 }
